@@ -143,6 +143,8 @@ MySQL (XAMPP)
 Cloner le dépôt
 
 Créer environnement virtuel
+python -m venv .venv
+.venv\Scripts\activate
 
 Installer dépendances (pip install -r requirements.txt)
 
