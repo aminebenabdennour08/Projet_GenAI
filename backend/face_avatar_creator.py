@@ -75,11 +75,11 @@ def build_prompt(features, style_prompt, gender, age, custom):
     parts = []
     
     if gender == "homme":
-        parts.append(f"portrait of a {age} man" if age else "portrait of a man")
+        parts.append(f"portrait of a {age} years old man" if age else "portrait of a man")
     elif gender == "femme":
-        parts.append(f"portrait of a {age} woman" if age else "portrait of a woman")
+        parts.append(f"portrait of a {age} years old woman" if age else "portrait of a woman")
     else:
-        parts.append(f"portrait of a {age} person" if age else "portrait of a person")
+        parts.append(f"portrait of a {age} years old person" if age else "portrait of a person")
     
     hair = features.get("hair", {})
     if hair.get("color") not in ["unknown", None]:
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     g = input("Genre (1-3): ")
     gender = {"1": "homme", "2": "femme", "3": "personne"}.get(g, "personne")
     
-    age = input("Age (ex: 25, young, middle-aged): ")
+    age = input("Age (ex: 25): ")
     custom = input("Vetements (ex: wearing a black suit): ")
     
     print("\n[QUALITE]")
