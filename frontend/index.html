@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Generator - Créez votre avatar IA</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/app" class="logo">🎨 AvatarGen</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/history">Historique</a>
+                <span id="userInfo" class="user-info"></span>
+                <button id="logoutBtn" class="btn-logout">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>🎨 Générateur d'Avatar IA</h1>
+            <p>Transformez votre photo en avatar personnalisé avec l'intelligence artificielle</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Étape 1: Upload -->
+            <div class="step" id="step1">
+                <h2>📸 Étape 1: Téléchargez votre photo</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="imageInput" accept="image/png,image/jpeg,image/jpg,image/webp">
+                    <label for="imageInput" class="upload-label">
+                        <span>📁</span>
+                        <p>Cliquez ou glissez votre photo ici</p>
+                        <small>PNG, JPG, WEBP - Max 50MB</small>
+                    </label>
+                </div>
+                <div id="preview" class="preview hidden">
+                    <img id="previewImg" alt="Aperçu">
+                    <button id="removeImage" class="btn-small">✖ Supprimer</button>
+                </div>
+            </div>
+
+            <!-- Étape 2: Paramètres -->
+            <div class="step hidden" id="step2">
+                <h2>⚙️ Étape 2: Paramètres</h2>
+                
+                <div class="form-group">
+                    <label>👤 Genre</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="gender" value="homme"> Homme</label>
+                        <label><input type="radio" name="gender" value="femme"> Femme</label>
+                        <label><input type="radio" name="gender" value="personne" checked> Non spécifié</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🎂 Âge</label>
+                    <input type="text" id="age" placeholder="Ex: 25, young, middle-aged, senior">
+                </div>
+
+                <div class="form-group">
+                    <label>👕 Vêtements / Accessoires</label>
+                    <input type="text" id="custom" placeholder="Ex: wearing a black suit, wearing a red dress">
+                </div>
+
+                <div class="form-group">
+                    <label>🎨 Qualité</label>
+                    <select id="quality">
+                        <option value="rapide">Rapide (20 steps, ~10s)</option>
+                        <option value="standard" selected>Standard (35 steps, ~20s)</option>
+                        <option value="haute">Haute (50 steps, ~30s)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🎭 Style</label>
+                    <div class="style-grid" id="styleGrid">
+                        <div class="style-card" data-style="1">
+                            <div class="style-icon">📷</div>
+                            <span>Realistic</span>
+                        </div>
+                        <div class="style-card" data-style="2">
+                            <div class="style-icon">🎬</div>
+                            <span>Cinematic</span>
+                        </div>
+                        <div class="style-card" data-style="3">
+                            <div class="style-icon">📸</div>
+                            <span>Studio</span>
+                        </div>
+                        <div class="style-card" data-style="4">
+                            <div class="style-icon">🎨</div>
+                            <span>Cartoon</span>
+                        </div>
+                        <div class="style-card" data-style="5">
+                            <div class="style-icon">🇯🇵</div>
+                            <span>Anime</span>
+                        </div>
+                        <div class="style-card" data-style="6">
+                            <div class="style-icon">🧙</div>
+                            <span>Fantasy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="extractBtn" class="btn-primary" disabled>📊 Extraire les caractéristiques</button>
+            </div>
+
+            <!-- Étape 3: Résultats -->
+            <div class="step hidden" id="step3">
+                <h2>📊 Étape 3: Caractéristiques extraites</h2>
+                <div id="featuresResult" class="features-card">
+                    <div class="loading">Chargement...</div>
+                </div>
+                <button id="generateBtn" class="btn-primary" disabled>🎨 Générer l'avatar</button>
+            </div>
+
+            <!-- Étape 4: Avatar généré -->
+            <div class="step hidden" id="step4">
+                <h2>✨ Étape 4: Votre avatar</h2>
+                <div id="avatarResult" class="avatar-card">
+                    <div class="loading">Génération en cours...</div>
+                </div>
+                <div class="action-buttons">
+                    <button id="downloadBtn" class="btn-secondary" disabled>💾 Télécharger</button>
+                    <button id="resetBtn" class="btn-secondary">🔄 Nouvelle création</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique - Avatar Generator</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/app" class="logo">🎨 AvatarGen</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/history">Historique</a>
+                <span id="userInfo" class="user-info"></span>
+                <button id="logoutBtn" class="btn-logout">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>📜 Historique des générations</h1>
+            <p>Retrouvez tous vos avatars créés</p>
+        </header>
+
+        <div class="main-content">
+            <div id="historyContainer">
+                <div class="loading">Chargement...</div>
+            </div>
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <script src="/js/history.js"></script>
+</body>
+</html>

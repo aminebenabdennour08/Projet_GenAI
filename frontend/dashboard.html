@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Avatar Generator</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/app" class="logo">🎨 AvatarGen</a>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/history">Historique</a>
+                <span id="userInfo" class="user-info"></span>
+                <button id="logoutBtn" class="btn-logout">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>📊 Tableau de bord</h1>
+            <p>Vos statistiques et activité</p>
+        </header>
+
+        <div class="main-content">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalGenerations">-</div>
+                    <div class="stat-label">Avatars générés</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="favoritesCount">-</div>
+                    <div class="stat-label">Favoris</div>
+                </div>
+            </div>
+
+            <h2>🏆 Styles les plus utilisés</h2>
+            <div id="topStyles" class="stats-grid"></div>
+
+            <h2 style="margin-top: 30px;">❤️ Mes favoris</h2>
+            <div id="favoritesList"></div>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
