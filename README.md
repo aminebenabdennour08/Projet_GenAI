@@ -27,7 +27,9 @@ Détection faciale	OpenCV (Haar Cascade)	Localisation du visage
 <img width="3120" height="332" alt="image" src="https://github.com/user-attachments/assets/8adf9ef1-5c4b-4b9e-8920-e5ca713a1c83" />
     
 🧠 Modèles d'IA utilisés
+
 1. Segmentation faciale - jonathandinu/face-parsing
+   
 Type : Segformer (Transformer-based)
 
 Fonction : Découpe l'image en 19 régions différentes (peau, cheveux, yeux, nez, bouche, etc.)
@@ -37,6 +39,7 @@ Téléchargement : https://huggingface.co/jonathandinu/face-parsing/tree/main
 Fichiers nécessaires : config.json, preprocessor_config.json, pytorch_model.bin
 
 2. Génération d'images - runwayml/stable-diffusion-v1-5
+   
 Type : Modèle de diffusion
 
 Fonction : Génère l'avatar à partir d'un prompt textuel
@@ -44,6 +47,7 @@ Fonction : Génère l'avatar à partir d'un prompt textuel
 Poids : ~2GB (téléchargement automatique)
 
 3. Détection faciale - OpenCV (Haar Cascade)
+   
 Bibliothèque : OpenCV
 
 Fichier : haarcascade_frontalface_default.xml
@@ -72,13 +76,14 @@ Visage : forme (ovale/rond/cœur), teint
 Accessoires : lunettes, sourire
 
 🎨 Génération d'avatars
-#	Style	Rendu
+
 1	REALISTIC	Photo réaliste, texture peau détaillée
 2	CINEMATIC	Style cinéma, éclairage dramatique
 3	STUDIO	Portrait studio, éclairage doux
 4	CARTOON	Style Pixar, couleurs vives
 5	ANIME	Style animation japonaise
 6	FANTASY	Personnage fantastique, éthéré
+
 💾 Gestion des données
 Historique des générations
 
@@ -87,7 +92,7 @@ Système de favoris
 Statistiques personnelles
 
 🔄 Flux de l'application
-text
+
 1. Upload photo
        ↓
 2. Détection du visage (OpenCV)
@@ -103,7 +108,9 @@ text
 7. Affichage et sauvegarde
    
 🗄️ Base de données
+
 Tables principales
+
 Table	Description
 users	Utilisateurs (id, username, email, password_hash)
 user_sessions	Sessions de connexion
@@ -161,13 +168,17 @@ Gestion des favoris
 Tableau de bord des statistiques
 
 📊 Performances
+
 Opération	Durée moyenne
 Extraction des traits	2-3 minutes
 Génération (qualité standard)	1-2 min
 Génération (qualité rapide)	2.5-3.5 min
 Génération (qualité haute)	4< min
+
 🔧 Défauts et limitations
+
 Problèmes identifiés
+
 Temps de calcul long : L'extraction et la génération prennent plusieurs minutes
 
 Dépendance GPU : La génération est lente sans carte graphique dédiée
