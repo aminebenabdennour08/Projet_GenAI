@@ -1,5 +1,6 @@
 # Projet_GenAI
 🎨 Avatar Generator AI
+
 📋 Description du projet
 Avatar Generator AI est une application web complète qui permet de générer des avatars personnalisés à partir d'une simple photo en utilisant l'intelligence artificielle. Le projet combine vision par ordinateur et génération d'images pour transformer vos photos en avatars uniques.
 
@@ -20,34 +21,10 @@ Frontend	HTML5, CSS3, JavaScript	Interface utilisateur
 Segmentation faciale	SegFormer (jonathandinu/face-parsing)	Extraction des traits du visage
 Génération d'images	Stable Diffusion 1.5	Création des avatars
 Détection faciale	OpenCV (Haar Cascade)	Localisation du visage
+
 📁 Structure du projet
 
-Projet_GenAI/
-│
-├── backend/                          # API et logique métier
-│   ├── app.py                        # Serveur Flask (routes API)
-│   ├── face_features_extractor.py    # Extraction des traits du visage
-│   ├── face_avatar_creator.py        # Génération d'avatars
-│   ├── init_db.py                    # Initialisation BDD
-│   └── requirements.txt              # Dépendances Python
-│
-├── frontend/                         # Interface utilisateur
-│   ├── index.html                    # Page principale
-│   ├── login.html                    # Connexion
-│   ├── register.html                 # Inscription
-│   ├── dashboard.html                # Tableau de bord
-│   ├── history.html                  # Historique
-│   ├── css/                          # Styles CSS
-│   └── js/                           # Scripts JavaScript
-│
-├── face_parsing_model/               # Modèle de segmentation
-│   ├── config.json
-│   ├── preprocessor_config.json
-│   └── pytorch_model.bin
-│
-├── uploads/                          # Images uploadées
-├── output/                           # Caractéristiques extraites
-├── avatars/                          # Images générées
+<img width="3120" height="332" alt="image" src="https://github.com/user-attachments/assets/8adf9ef1-5c4b-4b9e-8920-e5ca713a1c83" />
     
 🧠 Modèles d'IA utilisés
 1. Segmentation faciale - jonathandinu/face-parsing
