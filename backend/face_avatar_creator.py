@@ -149,7 +149,7 @@ class AvatarGenerator:
         try:
             result = self.pipe(
                 prompt=prompt,
-                negative_prompt="bad anatomy, bad proportions, disfigured body, extra limbs, missing limbs, mutated body, poorly drawn body, wrong body shape, deformed body, multiple arms, multiple legs, arm growing from wrong place, leg growing from wrong place, body twisted, body broken, body distorted, long torso, short torso, weird posture, unnatural pose, broken pose, impossible pose, contorted body, body horror, anatomical nonsense, misplaced limbs",
+                negative_prompt="bad anatomy, deformed, disfigured, extra limbs, missing limbs, bad hands, extra fingers, fused fingers, six fingers, bad face, asymmetrical, deformed face, crossed eyes, dead eyes, uncanny, blurry, low quality, watermark, text, logo",
                 num_inference_steps=steps,
                 guidance_scale=7.5,
                 width=512,
