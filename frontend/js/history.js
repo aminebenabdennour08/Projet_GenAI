@@ -1,10 +1,11 @@
 // ============================================================
-// history.js - Page d'historique
+// history.js - Page d'historique optimisée
 // ============================================================
 
 let currentPage = 1;
-const itemsPerPage = 10;
 let totalPages = 1;
+const itemsPerPage = 10;
+let isLoading = false;
 
 // Vérifier l'authentification
 document.addEventListener('DOMContentLoaded', async () => {
@@ -23,7 +24,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    loadHistory(1);
+    // Charger l'historique
+    await loadHistory(1);
     
     // Déconnexion
     const logoutBtn = document.getElementById('logoutBtn');
@@ -61,37 +63,54 @@ async function logout() {
     window.location.href = '/login.html';
 }
 
-// Charger l'historique
+// Charger l'historique avec pagination
 async function loadHistory(page = 1) {
+    if (isLoading) return;
+    isLoading = true;
+    
     const offset = (page - 1) * itemsPerPage;
+    
+    // Afficher l'indicateur de chargement
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const historyContainer = document.getElementById('historyContainer');
+    
+    loadingIndicator.style.display = 'block';
+    historyContainer.innerHTML = '';
     
     try {
         const response = await fetch(`/api/user/history?limit=${itemsPerPage}&offset=${offset}`, {
             credentials: 'include'
         });
+        
+        if (!response.ok) {
+            throw new Error('Erreur de chargement');
+        }
+        
         const data = await response.json();
         
-        if (data.success) {
+        loadingIndicator.style.display = 'none';
+        
+        if (data.success && data.history && data.history.length > 0) {
             displayHistory(data.history);
             totalPages = Math.ceil((data.total || data.history.length) / itemsPerPage);
             setupPagination(page);
         } else {
-            showError(data.error);
+            historyContainer.innerHTML = '<div class="no-data">📭 Aucun avatar généré pour le moment.</div>';
+            document.getElementById('pagination').innerHTML = '';
         }
+        
     } catch (error) {
         console.error('Erreur chargement historique:', error);
-        showError(error.message);
+        loadingIndicator.style.display = 'none';
+        historyContainer.innerHTML = '<div class="no-data">❌ Erreur de chargement. Veuillez réessayer.</div>';
+    } finally {
+        isLoading = false;
     }
 }
 
-// Afficher l'historique
+// Afficher l'historique avec lazy loading des images
 function displayHistory(history) {
     const container = document.getElementById('historyContainer');
-    
-    if (!history || history.length === 0) {
-        container.innerHTML = '<p class="no-data">Aucun avatar généré pour le moment.</p>';
-        return;
-    }
     
     let html = `
         <table class="history-table">
@@ -109,23 +128,28 @@ function displayHistory(history) {
             <tbody>
     `;
     
-    history.forEach(item => {
+    history.forEach((item, index) => {
         const date = new Date(item.generation_date).toLocaleString();
+        const imgId = `img_${index}_${Date.now()}`;
         
         html += `
             <tr>
-                <td>${date}</td>
+                <td style="white-space: nowrap;">${date}</td>
                 <td>
-                    <img src="/avatars/${item.generated_filename}" alt="Avatar" style="width: 50px; height: 50px; object-fit: cover; border-radius: 10px;" onerror="this.src='/img/placeholder.png'">
+                    <img id="${imgId}" 
+                         class="avatar-thumb" 
+                         data-src="/avatars/${item.generated_filename}"
+                         alt="Avatar"
+                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 10px; background: #f0f0f0;">
                 </td>
                 <td>${item.style_name || '-'}</td>
                 <td>${item.quality || '-'}</td>
                 <td>${item.hair_color || '-'}</td>
                 <td>${item.eyes_color || '-'}</td>
-                <td>
-                    <button onclick="viewAvatar('${item.generated_filename}')" class="btn-small">👁️ Voir</button>
-                    <button onclick="addToFavorites(${item.id})" class="btn-small">❤️ Favori</button>
-                    <button onclick="downloadAvatar('${item.generated_filename}')" class="btn-small">💾 Télécharger</button>
+                <td class="action-buttons">
+                    <button onclick="viewAvatar('${item.generated_filename}')" class="btn-icon" title="Voir">👁️</button>
+                    <button onclick="addToFavorites(${item.id})" class="btn-icon" title="Favori">❤️</button>
+                    <button onclick="downloadAvatar('${item.generated_filename}')" class="btn-icon" title="Télécharger">💾</button>
                 </td>
             </tr>
         `;
@@ -133,40 +157,77 @@ function displayHistory(history) {
     
     html += '</tbody></table>';
     container.innerHTML = html;
+    
+    // Lazy loading des images
+    lazyLoadImages();
+}
+
+// Lazy loading des images
+function lazyLoadImages() {
+    const images = document.querySelectorAll('.avatar-thumb');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                }
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => imageObserver.observe(img));
 }
 
 // Configuration de la pagination
 function setupPagination(currentPage) {
     const paginationContainer = document.getElementById('pagination');
     
-    if (!paginationContainer || totalPages <= 1) return;
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
     
     let html = '<div class="pagination">';
     
-    if (currentPage > 1) {
-        html += `<button onclick="goToPage(${currentPage - 1})" class="page-btn">◀ Précédent</button>`;
-    }
+    // Bouton précédent
+    html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>◀ Précédent</button>`;
     
+    // Pages
     const startPage = Math.max(1, currentPage - 2);
     const endPage = Math.min(totalPages, currentPage + 2);
     
-    for (let i = startPage; i <= endPage; i++) {
-        const activeClass = i === currentPage ? 'active' : '';
-        html += `<button onclick="goToPage(${i})" class="page-btn ${activeClass}">${i}</button>`;
+    if (startPage > 1) {
+        html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+        if (startPage > 2) html += '<span class="page-dots">...</span>';
     }
     
-    if (currentPage < totalPages) {
-        html += `<button onclick="goToPage(${currentPage + 1})" class="page-btn">Suivant ▶</button>`;
+    for (let i = startPage; i <= endPage; i++) {
+        const activeClass = i === currentPage ? 'active' : '';
+        html += `<button class="page-btn ${activeClass}" onclick="goToPage(${i})">${i}</button>`;
     }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) html += '<span class="page-dots">...</span>';
+        html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+    }
+    
+    // Bouton suivant
+    html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Suivant ▶</button>`;
     
     html += '</div>';
     paginationContainer.innerHTML = html;
 }
 
 // Aller à une page
-function goToPage(page) {
+async function goToPage(page) {
+    if (page < 1 || page > totalPages || page === currentPage) return;
     currentPage = page;
-    loadHistory(page);
+    await loadHistory(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -188,7 +249,7 @@ async function addToFavorites(avatarId) {
         const data = await response.json();
         
         if (data.success) {
-            alert('Ajouté aux favoris !');
+            alert('❤️ Ajouté aux favoris !');
         } else {
             alert('Erreur: ' + (data.error || 'Déjà dans les favoris'));
         }
@@ -205,11 +266,10 @@ function downloadAvatar(filename) {
     link.click();
 }
 
-// Afficher une erreur
-function showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error';
-    errorDiv.textContent = message;
-    document.querySelector('.main-content').prepend(errorDiv);
-    setTimeout(() => errorDiv.remove(), 5000);
-}
+// Raccourci clavier pour rafraîchir (F5)
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'F5') {
+        e.preventDefault();
+        loadHistory(currentPage);
+    }
+});
