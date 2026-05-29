@@ -5,6 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique - Avatar Generator</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Styles spécifiques pour l'historique */
+        .history-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .avatar-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .avatar-thumb:hover {
+            transform: scale(1.5);
+            z-index: 10;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .btn-icon:hover {
+            transform: scale(1.2);
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -26,9 +118,18 @@
         </header>
 
         <div class="main-content">
-            <div id="historyContainer">
-                <div class="loading">Chargement...</div>
+            <!-- Indicateur de chargement -->
+            <div id="loadingIndicator" style="display:none; text-align:center; padding:20px;">
+                <div class="loading-spinner"></div>
+                <p>Chargement...</p>
             </div>
+            
+            <!-- Conteneur de l'historique -->
+            <div id="historyContainer" class="history-container">
+                <div class="no-data">Aucun avatar généré pour le moment.</div>
+            </div>
+            
+            <!-- Pagination -->
             <div id="pagination" class="pagination"></div>
         </div>
     </div>
