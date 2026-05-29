@@ -1,5 +1,5 @@
 # ============================================================
-# app.py - API Flask principale (Version finale stable)
+# app.py - API Flask principale
 # ============================================================
 
 from flask import Flask, request, jsonify, send_file, send_from_directory, redirect
@@ -182,38 +182,11 @@ def serve_dashboard():
         return redirect('/login.html')
     return send_from_directory(os.path.join(PROJECT_ROOT, 'frontend'), 'dashboard.html')
 
-@app.route('/api/user/history', methods=['GET'])
-@login_required
-def get_history():
-    # Ajouter la pagination
-    limit = request.args.get('limit', 10, type=int)
-    offset = request.args.get('offset', 0, type=int)
-    
-    conn = get_db()
-    if not conn:
-        return jsonify({'error': 'Erreur base de donnees'}), 500
-    
-    cursor = conn.cursor(dictionary=True)
-    
-    # Compter le total
-    cursor.execute("SELECT COUNT(*) as total FROM generated_avatars WHERE user_id = %s", (request.user['id'],))
-    total = cursor.fetchone()['total']
-    
-    # Récupérer les avatars avec pagination
-    cursor.execute("""
-        SELECT a.*, f.hair_color, f.eyes_color, f.face_shape
-        FROM generated_avatars a
-        JOIN face_features f ON a.features_id = f.id
-        WHERE a.user_id = %s
-        ORDER BY a.generation_date DESC
-        LIMIT %s OFFSET %s
-    """, (request.user['id'], limit, offset))
-    
-    history = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    
-    return jsonify({'success': True, 'history': history, 'total': total})
+@app.route('/history')
+def serve_history():
+    if not check_page_auth():
+        return redirect('/login.html')
+    return send_from_directory(os.path.join(PROJECT_ROOT, 'frontend'), 'history.html')
 
 @app.route('/css/<path:path>')
 def serve_css(path):
@@ -544,52 +517,34 @@ def serve_avatar(filename):
 @app.route('/api/user/history', methods=['GET'])
 @login_required
 def get_history():
-    limit = request.args.get('limit', 50, type=int)
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
     
     conn = get_db()
     if not conn:
         return jsonify({'error': 'Erreur base de donnees'}), 500
     
     cursor = conn.cursor(dictionary=True)
+    
+    # Compter le total
+    cursor.execute("SELECT COUNT(*) as total FROM generated_avatars WHERE user_id = %s", (request.user['id'],))
+    total = cursor.fetchone()['total']
+    
+    # Récupérer les avatars avec pagination
     cursor.execute("""
         SELECT a.*, f.hair_color, f.eyes_color, f.face_shape
         FROM generated_avatars a
         JOIN face_features f ON a.features_id = f.id
         WHERE a.user_id = %s
         ORDER BY a.generation_date DESC
-        LIMIT %s
-    """, (request.user['id'], limit))
+        LIMIT %s OFFSET %s
+    """, (request.user['id'], limit, offset))
+    
     history = cursor.fetchall()
     cursor.close()
     conn.close()
     
-    return jsonify({'success': True, 'history': history})
-
-@app.route('/api/user/stats', methods=['GET'])
-@login_required
-def get_stats():
-    conn = get_db()
-    if not conn:
-        return jsonify({'error': 'Erreur base de donnees'}), 500
-    
-    cursor = conn.cursor(dictionary=True)
-    
-    cursor.execute("SELECT COUNT(*) as total FROM generated_avatars WHERE user_id = %s", (request.user['id'],))
-    total = cursor.fetchone()['total']
-    
-    cursor.execute("""
-        SELECT style_name, COUNT(*) as count
-        FROM generated_avatars WHERE user_id = %s
-        GROUP BY style_name ORDER BY count DESC LIMIT 5
-    """, (request.user['id'],))
-    top_styles = cursor.fetchall()
-    
-    cursor.close()
-    conn.close()
-    
-    return jsonify({'success': True, 'stats': {'total_generations': total, 'top_styles': top_styles}})
-
-# Ajouter dans app.py après les autres routes
+    return jsonify({'success': True, 'history': history, 'total': total})
 
 @app.route('/api/user/favorites', methods=['GET', 'POST', 'DELETE'])
 @login_required
@@ -630,7 +585,7 @@ def manage_favorites():
         except mysql.connector.IntegrityError:
             cursor.close()
             conn.close()
-            return jsonify({'error': 'Déjà dans les favoris'}), 400
+            return jsonify({'error': 'Deja dans les favoris'}), 400
     
     elif request.method == 'DELETE':
         data = request.json
@@ -644,7 +599,31 @@ def manage_favorites():
         cursor.close()
         conn.close()
         return jsonify({'success': True})
+
+@app.route('/api/user/stats', methods=['GET'])
+@login_required
+def get_stats():
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Erreur base de donnees'}), 500
     
+    cursor = conn.cursor(dictionary=True)
+    
+    cursor.execute("SELECT COUNT(*) as total FROM generated_avatars WHERE user_id = %s", (request.user['id'],))
+    total = cursor.fetchone()['total']
+    
+    cursor.execute("""
+        SELECT style_name, COUNT(*) as count
+        FROM generated_avatars WHERE user_id = %s
+        GROUP BY style_name ORDER BY count DESC LIMIT 5
+    """, (request.user['id'],))
+    top_styles = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    
+    return jsonify({'success': True, 'stats': {'total_generations': total, 'top_styles': top_styles}})
+
 # ============================================================
 # LANCEMENT
 # ============================================================
