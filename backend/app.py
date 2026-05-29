@@ -182,11 +182,38 @@ def serve_dashboard():
         return redirect('/login.html')
     return send_from_directory(os.path.join(PROJECT_ROOT, 'frontend'), 'dashboard.html')
 
-@app.route('/history')
-def serve_history():
-    if not check_page_auth():
-        return redirect('/login.html')
-    return send_from_directory(os.path.join(PROJECT_ROOT, 'frontend'), 'history.html')
+@app.route('/api/user/history', methods=['GET'])
+@login_required
+def get_history():
+    # Ajouter la pagination
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    
+    conn = get_db()
+    if not conn:
+        return jsonify({'error': 'Erreur base de donnees'}), 500
+    
+    cursor = conn.cursor(dictionary=True)
+    
+    # Compter le total
+    cursor.execute("SELECT COUNT(*) as total FROM generated_avatars WHERE user_id = %s", (request.user['id'],))
+    total = cursor.fetchone()['total']
+    
+    # Récupérer les avatars avec pagination
+    cursor.execute("""
+        SELECT a.*, f.hair_color, f.eyes_color, f.face_shape
+        FROM generated_avatars a
+        JOIN face_features f ON a.features_id = f.id
+        WHERE a.user_id = %s
+        ORDER BY a.generation_date DESC
+        LIMIT %s OFFSET %s
+    """, (request.user['id'], limit, offset))
+    
+    history = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return jsonify({'success': True, 'history': history, 'total': total})
 
 @app.route('/css/<path:path>')
 def serve_css(path):
