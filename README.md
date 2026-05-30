@@ -14,13 +14,18 @@ Générer des avatars dans différents styles artistiques
 Proposer une interface web complète avec gestion des utilisateurs
 
 🛠️ Technologies utilisées
-Composant	Technologie	Rôle
-Backend	Python + Flask	API et logique métier
-Base de données	MySQL (XAMPP)	Stockage des utilisateurs et générations
-Frontend	HTML5, CSS3, JavaScript	Interface utilisateur
-Segmentation faciale	SegFormer (jonathandinu/face-parsing)	Extraction des traits du visage
-Génération d'images	Stable Diffusion 1.5	Création des avatars
-Détection faciale	OpenCV (Haar Cascade)	Localisation du visage
+Backend	
+Python + Flask
+Base de données	
+MySQL (XAMPP)
+Frontend
+HTML5, CSS3, JavaScript
+Segmentation faciale
+SegFormer (jonathandinu/face-parsing)
+Génération d'images
+Stable Diffusion 1.5
+Détection faciale
+OpenCV (Haar Cascade)
 
 📁 Structure du projet
 
@@ -94,41 +99,12 @@ Statistiques personnelles
 🔄 Flux de l'application
 
 1. Upload photo
-       ↓
 2. Détection du visage (OpenCV)
-       ↓
 3. Segmentation faciale (SegFormer - 19 classes)
-       ↓
 4. Extraction des caractéristiques
-       ↓
 5. Construction d'un prompt IA
-       ↓
 6. Génération de l'avatar (Stable Diffusion)
-       ↓
 7. Affichage et sauvegarde
-   
-🗄️ Base de données
-
-Tables principales
-
-Table	Description
-users	Utilisateurs (id, username, email, password_hash)
-user_sessions	Sessions de connexion
-user_images	Photos uploadées
-face_features	Caractéristiques extraites (cheveux, yeux, forme, teint)
-generated_avatars	Avatars générés (style, qualité, prompt utilisé)
-favorite_avatars	Favoris des utilisateurs
-
-📡 API principales
-Endpoint	Méthode	Description
-/api/register	POST	Inscription
-/api/login	POST	Connexion
-/api/upload	POST	Upload photo
-/api/extract	POST	Extraction des traits
-/api/generate	POST	Génération avatar
-/api/user/history	GET	Historique
-/api/user/favorites	GET/POST/DELETE	Gestion favoris
-/api/user/stats	GET	Statistiques
 
 🚀 Installation (étapes clés)
 
@@ -154,7 +130,6 @@ Télécharger le modèle de segmentation (Hugging Face)
 
 Lancer le serveur (python app.py)
 
-
 Fonctionnalités présentées dans la vidéo :
 
 Création de compte et connexion
@@ -173,9 +148,9 @@ Tableau de bord des statistiques
 
 Opération	Durée moyenne
 Extraction des traits	2-3 minutes
-Génération (qualité standard)	1-2 min
-Génération (qualité rapide)	2.5-3.5 min
-Génération (qualité haute)	4< min
+Génération (qualité standard)	4-6 min
+Génération (qualité rapide)	2-3 min
+Génération (qualité haute)	>6 min
 
 🔧 Défauts et limitations
 
