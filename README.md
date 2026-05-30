@@ -14,17 +14,29 @@ Générer des avatars dans différents styles artistiques
 Proposer une interface web complète avec gestion des utilisateurs
 
 🛠️ Technologies utilisées
+
 Backend	
+
 Python + Flask
+
 Base de données	
+
 MySQL (XAMPP)
+
 Frontend
+
 HTML5, CSS3, JavaScript
+
 Segmentation faciale
+
 SegFormer (jonathandinu/face-parsing)
+
 Génération d'images
+
 Stable Diffusion 1.5
+
 Détection faciale
+
 OpenCV (Haar Cascade)
 
 📁 Structure du projet
